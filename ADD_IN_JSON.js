@@ -1,25 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { pause } from "./fetchUsers";
+import { faker } from "@faker-js/faker";
 
-export const pause = (duration) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve();
-    }, duration);
+export const addUser = createAsyncThunk("users/add", async () => {
+  const response = await axios.post("http://localhost:3005/users", {
+    name: faker.name.fullName(),
   });
-};
 
-export const fetchUsers = createAsyncThunk("users/fetch", async () => {
-  // Request Logic !
+  await pause(250);
 
-  try {
-    const response = await axios.get("http://localhost:3005/users");
-
-    //   DDEV ONLY
-    await pause(1000);
-    return response.data;
-  } catch (err) {
-    console.log(err);
-    throw new Error("Check the URL once !");
-  }
+  return response.data;
 });
